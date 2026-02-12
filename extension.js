@@ -4,7 +4,7 @@
     author: "Cap_Apiluk",
     category: "Communication",
     version: "1.0.0",
-    icon: "/static/icon.png",
+    icon: "/static/icon.svg",
     color: "#00C7B7",
 
     blocks: [
