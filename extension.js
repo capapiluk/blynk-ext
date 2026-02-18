@@ -1,16 +1,18 @@
 ({
-    name: "Blynk IoT",
-    description: "Blynk IoT Platform for MicroPython v1.6+ ESP32/ESP8266/Raspberry Pi (Updated for latest Blynk library v1.3.2)",
+    name: "Blynk IoT 2025-2026",
+    description: "Blynk IoT Platform 2025-2026 for MicroPython ESP32/ESP8266 - Full Template ID Support, Modern blynk.cloud, Official Doc Compatible",
     author: "Cap_Apiluk",
     category: "Communication",  
-    version: "2.0.0",
+    version: "2.1.0",
     icon: "/static/icon.png",
     color: "#00C7B7",
 
     blocks: [
         // ===== ตั้งค่าหลัก (เริ่มต้นใช้งาน) =====
-        {   // 1. Blynk Setup (ทุกอย่างในบล็อกเดียว)
+        {   // 1. Blynk 2025 Complete Setup (Template ID + все что нужно)
             xml: `<block type="blynk_wifi_setup">
+                    <value name="template_id"><shadow type="text"><field name="TEXT">TMPL000000000</field></shadow></value>
+                    <value name="template_name"><shadow type="text"><field name="TEXT">My Device</field></shadow></value>
                     <value name="ssid"><shadow type="text"><field name="TEXT">YourWiFi</field></shadow></value>
                     <value name="password"><shadow type="text"><field name="TEXT">YourPassword</field></shadow></value>
                     <value name="auth"><shadow type="text"><field name="TEXT">YourAuthToken</field></shadow></value>
@@ -100,6 +102,21 @@
         },
         {   // 16. ข้อมูล Memory (ESP32)
             xml: `<block type="blynk_memory_info"></block>`
+        },
+        
+        // ===== BLYNK 2025-2026 MODERN FEATURES =====
+        {   // 17. HTTP API Upload (Official Doc)
+            xml: `<block type="blynk_http_upload">
+                    <value name="pin"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
+                    <value name="value"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+                    <value name="timestamp"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+                  </block>`
+        },
+        {   // 18. Device Status Check
+            xml: `<block type="blynk_device_status"></block>`
+        },
+        {   // 19. OTA Ready Check
+            xml: `<block type="blynk_ota_ready"></block>`
         }
     ],
 

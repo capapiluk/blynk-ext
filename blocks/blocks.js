@@ -4,18 +4,24 @@
 // Updated for Blynk library v1.3.2 compatibility 
 // ============================================================
 
-// Block 0 — WiFi + Blynk Setup (Combined)
+// Block 0 — Blynk 2025 Complete Setup (Template ID + WiFi + Connection)
 Blockly.Blocks['blynk_wifi_setup'] = {
   init: function() {
+    this.appendValueInput('template_id')
+        .setCheck('String')
+        .appendField('🚀 Blynk 2025 Setup - Template ID');
+    this.appendValueInput('template_name')
+        .setCheck('String')
+        .appendField('Template Name');
     this.appendValueInput('ssid')
         .setCheck('String')
-        .appendField('Blynk ตั้งค่าทั้งหมด WiFi');
+        .appendField('WiFi SSID');
     this.appendValueInput('password')
         .setCheck('String')
-        .appendField('รหัส');
+        .appendField('รหัส WiFi');
     this.appendValueInput('auth')
         .setCheck('String')
-        .appendField('Blynk Token');
+        .appendField('Auth Token');
     this.appendValueInput('server')
         .setCheck('String')
         .appendField('Server');
@@ -25,8 +31,8 @@ Blockly.Blocks['blynk_wifi_setup'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(120);
-    this.setTooltip('ตั้งค่า WiFi และ Blynk ในบล็อกเดียว สำหรับผู้เริ่มต้น\nรวม: WiFi Connect + Template ID + Blynk Init');
-    this.setHelpUrl('');
+    this.setTooltip('Blynk 2025-2026 Complete Setup\n✅ Template ID (Required!)\n✅ WiFi Auto-Connect\n✅ Modern blynk.cloud server\n✅ Static Token support');
+    this.setHelpUrl('https://docs.blynk.io/en/getting-started/supported-boards');
   }
 };
 
@@ -384,8 +390,54 @@ Blockly.Blocks['blynk_memory_info'] = {
     this.appendDummyInput()
         .appendField('ESP32 ข้อมูล Memory');
     this.setOutput(true, null);
-    this.setColour(290);
-    this.setTooltip('ข้อมูลการใช้หน่วยความจำบน ESP32\nคืนค่า dictionary ที่มี free, allocated');
+    this.setColour(220);
+    this.setTooltip('ข้อมูล Memory ฟรี ESP32\nคืนค่าจำนวน bytes');
     this.setHelpUrl('');
+  }
+};
+
+// ===== Blynk 2025-2026 MODERN FEATURES =====
+
+// Block 24 — HTTP API Upload (Official Doc Method)
+Blockly.Blocks['blynk_http_upload'] = {
+  init: function() {
+    this.appendValueInput('pin')
+        .setCheck('Number')
+        .appendField('📊 HTTP API Upload Pin');
+    this.appendValueInput('value')
+        .setCheck(['Number', 'String'])
+        .appendField('Value');
+    this.appendValueInput('timestamp')
+        .setCheck('Number')
+        .appendField('Timestamp (optional)');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(45);
+    this.setTooltip('Blynk 2025-2026 HTTP API\n✅ Batch data upload\n✅ Cellular-friendly\n✅ Timestamped data\nIdeal for low-power devices');
+    this.setHelpUrl('https://docs.blynk.io/en/blynk.cloud/device-https-api');
+  }
+};
+
+// Block 25 — Device Status Check (Modern)
+Blockly.Blocks['blynk_device_status'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('🔍 Device Status Check');
+    this.setOutput(true, 'Boolean');
+    this.setColour(45);
+    this.setTooltip('Check 2025-2026 device status\n✅ Connection health\n✅ Template validation\n✅ Server response');
+    this.setHelpUrl('');
+  }
+};
+
+// Block 26 — OTA Ready Status
+Blockly.Blocks['blynk_ota_ready'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('🔄 OTA Update Ready?');
+    this.setOutput(true, 'Boolean');  
+    this.setColour(45);
+    this.setTooltip('Blynk.Air OTA Preparation\n✅ Check firmware update availability\n✅ Prepare for Over-The-Air updates');
+    this.setHelpUrl('https://docs.blynk.io/en/blynk.edgent/updating-devices-firmwares-ota');
   }
 };
