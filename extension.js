@@ -4,7 +4,7 @@
     author: "Cap_Apiluk",
     category: "Communication",  
     version: "2.0.0",
-    icon: "/static/icon.svg",
+    icon: "static/icon.png",
     color: "#00C7B7",
 
     blocks: [
@@ -123,14 +123,14 @@
     ],
 
     js: [
-        "/blynk_blocks.js",
-        "/blynk_generators.js"
+        "blynk_blocks.js",
+        "blynk_generators.js"
     ],
 
     modules: [
         {
             name: "blynklib_mp",
-            path: "/modules/blynklib_mp.py"
+            path: "modules/blynklib_mp.py"
         }
     ]
 });
