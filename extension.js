@@ -123,8 +123,8 @@
     ],
 
     js: [
-        "/blynk_blocks.js",
-        "/blynk_generators.js"
+        "/blocks.js",
+        "/generators.js"
     ],
 
     modules: [
