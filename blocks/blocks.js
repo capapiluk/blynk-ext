@@ -4,6 +4,32 @@
 // Updated for Blynk library v1.3.2 compatibility 
 // ============================================================
 
+// Block 0 — WiFi + Blynk Setup (Combined)
+Blockly.Blocks['blynk_wifi_setup'] = {
+  init: function() {
+    this.appendValueInput('ssid')
+        .setCheck('String')
+        .appendField('Blynk ตั้งค่าทั้งหมด WiFi');
+    this.appendValueInput('password')
+        .setCheck('String')
+        .appendField('รหัส');
+    this.appendValueInput('auth')
+        .setCheck('String')
+        .appendField('Blynk Token');
+    this.appendValueInput('server')
+        .setCheck('String')
+        .appendField('Server');
+    this.appendValueInput('port')
+        .setCheck('Number')
+        .appendField('Port');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(120);
+    this.setTooltip('ตั้งค่า WiFi และ Blynk ในบล็อกเดียว สำหรับผู้เริ่มต้น\nรวม: WiFi Connect + Template ID + Blynk Init');
+    this.setHelpUrl('');
+  }
+};
+
 // Block 1 — เชื่อมต่อ Blynk
 Blockly.Blocks['blynk_init'] = {
   init: function() {
