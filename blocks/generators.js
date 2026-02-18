@@ -5,6 +5,36 @@
 // ============================================================
 
 var BLYNK_IMPORT = 'import blynklib_mp as blynklib';
+var WIFI_IMPORT = 'import network';
+
+// Generator 0 — WiFi + Blynk Setup (Combined) 
+Blockly.Python['blynk_wifi_setup'] = function(block) {
+    Blockly.Python.definitions_['import_blynk'] = BLYNK_IMPORT;
+    Blockly.Python.definitions_['import_wifi'] = WIFI_IMPORT;
+    
+    var ssid     = Blockly.Python.valueToCode(block, 'ssid',     Blockly.Python.ORDER_ATOMIC) || '"YourWiFi"';
+    var password = Blockly.Python.valueToCode(block, 'password', Blockly.Python.ORDER_ATOMIC) || '"YourPassword"';
+    var auth     = Blockly.Python.valueToCode(block, 'auth',     Blockly.Python.ORDER_ATOMIC) || '""';
+    var server   = Blockly.Python.valueToCode(block, 'server',   Blockly.Python.ORDER_ATOMIC) || '"blynk.cloud"';
+    var port     = Blockly.Python.valueToCode(block, 'port',     Blockly.Python.ORDER_ATOMIC) || '80';
+    
+    // Complete WiFi + Blynk setup
+    Blockly.Python.definitions_['wifi_connect'] = 
+        'sta_if = network.WLAN(network.STA_IF)\n' +
+        'if not sta_if.isconnected():\n' +
+        '    print("Connecting to WiFi...")\n' +
+        '    sta_if.active(True)\n' +
+        '    sta_if.connect(' + ssid + ', ' + password + ')\n' +
+        '    while not sta_if.isconnected():\n' +
+        '        pass\n' +
+        'print("WiFi Connected:", sta_if.ifconfig()[0])';
+        
+    Blockly.Python.definitions_['blynk_obj'] =
+        'blynk = blynklib.Blynk(' + auth + ', server=' + server + ', port=' + port + 
+        ', heartbeat_timeout=30, firmware_version="2.0.0", device_name="ESP32 Device", auto_wifi=False)';
+    
+    return '';
+};
 
 // Generator 1 — blynk_init  
 Blockly.Python['blynk_init'] = function(block) {
