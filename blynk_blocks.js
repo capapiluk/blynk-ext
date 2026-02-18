@@ -18,9 +18,9 @@ Blockly.Blocks['blynk_init'] = {
         .appendField('Port');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#00C7B7');
+    this.setColour(180);
     this.setTooltip('สร้าง Blynk object และเชื่อมต่อ server\nport 80 = HTTP, port 443 = HTTPS');
-    this.setHelpUrl('https://github.com/blynkkk/lib-python');
+    this.setHelpUrl('');
   }
 };
 
@@ -31,7 +31,7 @@ Blockly.Blocks['blynk_run'] = {
         .appendField('Blynk Run');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#00C7B7');
+    this.setColour(180);
     this.setTooltip('ต้องเรียกใน loop ตลอดเวลา ไม่เช่นนั้นจะ disconnect');
     this.setHelpUrl('');
   }
@@ -48,7 +48,7 @@ Blockly.Blocks['blynk_virtual_write'] = {
         .appendField('ค่า');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#00C7B7');
+    this.setColour(180);
     this.setTooltip('ส่งค่าไป Virtual Pin เพื่อแสดงที่ Widget บน App');
     this.setHelpUrl('');
   }
@@ -65,7 +65,7 @@ Blockly.Blocks['blynk_handle_read'] = {
         .appendField('ทำ');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#1A86C8');
+    this.setColour('120');
     this.setTooltip('ทำงานเมื่อ App ขอค่าจาก Virtual Pin\nใช้ virtual_write ตอบกลับ');
     this.setHelpUrl('');
   }
@@ -85,7 +85,7 @@ Blockly.Blocks['blynk_handle_write'] = {
         .appendField('ทำ');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#1A86C8');
+    this.setColour('120');
     this.setTooltip('ทำงานเมื่อ App ส่งค่ามาที่ Virtual Pin\nค่าที่ได้เป็น list เช่น values[0]');
     this.setHelpUrl('');
   }
@@ -101,7 +101,7 @@ Blockly.Blocks['blynk_handle_connect'] = {
         .appendField('ทำ');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#27AE60');
+    this.setColour('160');
     this.setTooltip('ทำงานครั้งเดียวหลังเชื่อมต่อสำเร็จ');
     this.setHelpUrl('');
   }
@@ -117,7 +117,7 @@ Blockly.Blocks['blynk_handle_disconnect'] = {
         .appendField('ทำ');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#E74C3C');
+    this.setColour('0');
     this.setTooltip('ทำงานเมื่อการเชื่อมต่อขาด (auto-reconnect จะทำงานเองใน run())');
     this.setHelpUrl('');
   }
@@ -131,7 +131,7 @@ Blockly.Blocks['blynk_sync_virtual'] = {
         .appendField('Blynk Sync Virtual Pin V');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#00C7B7');
+    this.setColour(180);
     this.setTooltip('ขอค่าล่าสุดจาก Blynk server สำหรับ virtual pin นั้น');
     this.setHelpUrl('');
   }
@@ -151,7 +151,7 @@ Blockly.Blocks['blynk_set_property'] = {
         .appendField('ค่า');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#8E44AD');
+    this.setColour('280');
     this.setTooltip('เปลี่ยน property ของ Widget\nเช่น color="#FF0000"  label="Temp"  min=0  max=100');
     this.setHelpUrl('');
   }
@@ -165,7 +165,7 @@ Blockly.Blocks['blynk_notify'] = {
         .appendField('Blynk แจ้งเตือนมือถือ');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#E67E22');
+    this.setColour('30');
     this.setTooltip('ส่ง Push Notification ไปยัง Blynk App บนมือถือ');
     this.setHelpUrl('');
   }
@@ -185,7 +185,7 @@ Blockly.Blocks['blynk_email'] = {
         .appendField('เนื้อหา');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#E67E22');
+    this.setColour('30');
     this.setTooltip('ส่ง Email ผ่าน Blynk (ต้องตั้งค่า Email widget ใน App ก่อน)');
     this.setHelpUrl('');
   }
@@ -202,7 +202,7 @@ Blockly.Blocks['blynk_log_event'] = {
         .appendField('รายละเอียด');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#8E44AD');
+    this.setColour('280');
     this.setTooltip('บันทึก event ลง Blynk Timeline');
     this.setHelpUrl('');
   }
@@ -214,7 +214,7 @@ Blockly.Blocks['blynk_is_connected'] = {
     this.appendDummyInput()
         .appendField('Blynk เชื่อมต่ออยู่?');
     this.setOutput(true, 'Boolean');
-    this.setColour('#00C7B7');
+    this.setColour(180);
     this.setTooltip('คืนค่า True ถ้า connected');
     this.setHelpUrl('');
   }
@@ -230,7 +230,7 @@ Blockly.Blocks['blynk_get_value'] = {
         .setCheck('Number')
         .appendField('ตำแหน่ง');
     this.setOutput(true, null);
-    this.setColour('#95A5A6');
+    this.setColour('210');
     this.setTooltip('ดึงค่า values[index] จาก write handler\nindex เริ่มที่ 0');
     this.setHelpUrl('');
   }
@@ -244,7 +244,7 @@ Blockly.Blocks['blynk_template_id'] = {
         .appendField('Blynk Template ID');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#00C7B7');
+    this.setColour(180);
     this.setTooltip('ตั้งค่า Template ID สำหรับ Blynk IoT (v1.3.2+)\nเช่น TMPL000000');
     this.setHelpUrl('');
   }
@@ -258,7 +258,7 @@ Blockly.Blocks['blynk_device_name'] = {
         .appendField('Blynk Device Name');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#00C7B7');
+    this.setColour(180);
     this.setTooltip('ตั้งชื่ออุปกรณ์สำหรับ Blynk IoT');
     this.setHelpUrl('');
   }
@@ -272,7 +272,7 @@ Blockly.Blocks['blynk_firmware_version'] = {
         .appendField('Firmware Version');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#00C7B7');
+    this.setColour(180);
     this.setTooltip('ตั้งค่าเวอร์ชันของ Firmware\nเช่น 1.0.0');
     this.setHelpUrl('');
   }
@@ -292,7 +292,7 @@ Blockly.Blocks['blynk_update_property'] = {
         .appendField('ค่า');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#00C7B7');
+    this.setColour(180);
     this.setTooltip('อัพเดท Widget Property ใน Blynk v1.3.2+\nProperty: color, label, min, max, step');
     this.setHelpUrl('');
   }
@@ -305,7 +305,7 @@ Blockly.Blocks['blynk_batch_start'] = {
         .appendField('Blynk Batch Send เริ่ม');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#E67E22');
+    this.setColour('30');
     this.setTooltip('เริ่มการส่งแบบ Batch หลายค่าพร้อมกัน\nเพิ่มประสิทธิภาพเมื่อส่งหลายค่า');
     this.setHelpUrl('');
   }
@@ -318,7 +318,7 @@ Blockly.Blocks['blynk_batch_end'] = {
         .appendField('Blynk Batch Send จบ');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour('#E67E22');
+    this.setColour('30');
     this.setTooltip('จบการส่งแบบ Batch\nส่งข้อมูลทั้งหมดไปยัง Blynk Cloud');
     this.setHelpUrl('');
   }
@@ -334,7 +334,7 @@ Blockly.Blocks['blynk_wifi_connect'] = {
         .setCheck('String')
         .appendField('รหัสผ่าน');
     this.setOutput(true, 'Boolean');
-    this.setColour('#3498DB');
+    this.setColour('220');
     this.setTooltip('เชื่อมต่อ WiFi บน ESP32\nคืนค่า True ถ้าเชื่อมต่อสำเร็จ');
     this.setHelpUrl('');
   }
@@ -346,7 +346,7 @@ Blockly.Blocks['blynk_wifi_info'] = {
     this.appendDummyInput()
         .appendField('ESP32 ข้อมูล WiFi');
     this.setOutput(true, null);
-    this.setColour('#3498DB');
+    this.setColour('220');
     this.setTooltip('ข้อมูลการเชื่อมต่อ WiFi บน ESP32\nคืนค่า dictionary ที่มี IP, RSSI, สถานะ');
     this.setHelpUrl('');
   }
@@ -358,7 +358,7 @@ Blockly.Blocks['blynk_memory_info'] = {
     this.appendDummyInput()
         .appendField('ESP32 ข้อมูล Memory');
     this.setOutput(true, null);
-    this.setColour('#9B59B6');
+    this.setColour('290');
     this.setTooltip('ข้อมูลการใช้หน่วยความจำบน ESP32\nคืนค่า dictionary ที่มี free, allocated');
     this.setHelpUrl('');
   }
