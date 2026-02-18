@@ -1,18 +1,22 @@
 // ============================================================
 // Blynk IoT — Python Generators
-// MicroBlock + MicroPython 1.6.0
+// MicroBlock + MicroPython 1.6+
+// Updated for Blynk library v1.3.2 compatibility
 // ============================================================
 
 var BLYNK_IMPORT = 'import blynklib_mp as blynklib';
 
-// Generator 1 — blynk_init
+// Generator 1 — blynk_init  
 Blockly.Python['blynk_init'] = function(block) {
     Blockly.Python.definitions_['import_blynk'] = BLYNK_IMPORT;
     var auth   = Blockly.Python.valueToCode(block, 'auth',   Blockly.Python.ORDER_ATOMIC) || '""';
     var server = Blockly.Python.valueToCode(block, 'server', Blockly.Python.ORDER_ATOMIC) || '"blynk.cloud"';
     var port   = Blockly.Python.valueToCode(block, 'port',   Blockly.Python.ORDER_ATOMIC) || '80';
+    
+    // Enhanced initialization for ESP32 + Blynk v1.3.2+
     Blockly.Python.definitions_['blynk_obj'] =
-        'blynk = blynklib.Blynk(' + auth + ', server=' + server + ', port=' + port + ')';
+        'blynk = blynklib.Blynk(' + auth + ', server=' + server + ', port=' + port + 
+        ', heartbeat_timeout=30, firmware_version="2.0.0", device_name="ESP32 Device", auto_wifi=True)';
     return '';
 };
 
@@ -131,4 +135,68 @@ Blockly.Python['blynk_get_value'] = function(block) {
     var values = Blockly.Python.valueToCode(block, 'values', Blockly.Python.ORDER_ATOMIC) || '[]';
     var index  = Blockly.Python.valueToCode(block, 'index',  Blockly.Python.ORDER_ATOMIC) || '0';
     return [values + '[' + index + ']', Blockly.Python.ORDER_ATOMIC];
+};
+
+// Generator 15 — Template ID (New in v1.3.2+)
+Blockly.Python['blynk_template_id'] = function(block) {
+    Blockly.Python.definitions_['import_blynk'] = BLYNK_IMPORT;
+    var template_id = Blockly.Python.valueToCode(block, 'template_id', Blockly.Python.ORDER_ATOMIC) || '""';
+    Blockly.Python.definitions_['blynk_template_id'] = 'blynk.template_id = ' + template_id;
+    return '';
+};
+
+// Generator 16 — Device Name (New in v1.3.2+)
+Blockly.Python['blynk_device_name'] = function(block) {
+    Blockly.Python.definitions_['import_blynk'] = BLYNK_IMPORT;
+    var name = Blockly.Python.valueToCode(block, 'name', Blockly.Python.ORDER_ATOMIC) || '""';
+    Blockly.Python.definitions_['blynk_device_name'] = 'blynk.device_name = ' + name;
+    return '';
+};
+
+// Generator 17 — Firmware Version (New in v1.3.2+)
+Blockly.Python['blynk_firmware_version'] = function(block) {
+    Blockly.Python.definitions_['import_blynk'] = BLYNK_IMPORT;
+    var version = Blockly.Python.valueToCode(block, 'version', Blockly.Python.ORDER_ATOMIC) || '"1.0.0"';
+    return 'blynk.firmware_info(' + version + ')\n';
+};
+
+// Generator 18 — Update Property (Enhanced set_property)  
+Blockly.Python['blynk_update_property'] = function(block) {
+    Blockly.Python.definitions_['import_blynk'] = BLYNK_IMPORT;
+    var pin      = Blockly.Python.valueToCode(block, 'pin',      Blockly.Python.ORDER_ATOMIC) || '0';
+    var property = Blockly.Python.valueToCode(block, 'property', Blockly.Python.ORDER_ATOMIC) || '"color"';
+    var value    = Blockly.Python.valueToCode(block, 'value',    Blockly.Python.ORDER_ATOMIC) || '""';
+    return 'blynk.update_property(' + pin + ', ' + property + ', ' + value + ')\n';
+};
+
+// Generator 19 — Batch Send Start (Performance improvement)
+Blockly.Python['blynk_batch_start'] = function(block) {
+    Blockly.Python.definitions_['import_blynk'] = BLYNK_IMPORT;
+    return 'blynk.batch_send_start()\n';
+};
+
+// Generator 20 — Batch Send End
+Blockly.Python['blynk_batch_end'] = function(block) {
+    Blockly.Python.definitions_['import_blynk'] = BLYNK_IMPORT;
+    return 'blynk.batch_send_end()\n';
+};
+
+// Generator 21 — WiFi Connect (ESP32)
+Blockly.Python['blynk_wifi_connect'] = function(block) {
+    Blockly.Python.definitions_['import_blynk'] = BLYNK_IMPORT;
+    var ssid = Blockly.Python.valueToCode(block, 'ssid', Blockly.Python.ORDER_ATOMIC) || '""';
+    var password = Blockly.Python.valueToCode(block, 'password', Blockly.Python.ORDER_ATOMIC) || '""';
+    return ['blynk.wifi_connect(' + ssid + ', ' + password + ')', Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
+// Generator 22 — WiFi Info (ESP32)
+Blockly.Python['blynk_wifi_info'] = function(block) {
+    Blockly.Python.definitions_['import_blynk'] = BLYNK_IMPORT;
+    return ['blynk.wifi_info()', Blockly.Python.ORDER_FUNCTION_CALL];
+};
+
+// Generator 23 — Memory Info (ESP32)
+Blockly.Python['blynk_memory_info'] = function(block) {
+    Blockly.Python.definitions_['import_blynk'] = BLYNK_IMPORT;
+    return ['blynk.memory_info()', Blockly.Python.ORDER_FUNCTION_CALL];
 };

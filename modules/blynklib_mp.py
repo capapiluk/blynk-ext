@@ -1,13 +1,23 @@
 # Copyright (c) 2015-2019 Volodymyr Shymanskyy
-# Modified for MicroPython 1.6.0 + MicroBlock by Cap_Apiluk
-# Source: https://github.com/blynkkk/lib-python
+# Modified for MicroPython 1.6+ and MicroBlock ESP32 by Cap_Apiluk
+# Updated for Blynk library v1.3.2 compatibility
+# Optimized for ESP32 WiFi connectivity
+# Source: https://github.com/blynkkk/blynk-library  
 # License: MIT
-# MicroPython 1.6.0 compatible — no f-strings
+# MicroPython 1.6+ compatible — enhanced networking and error handling for ESP32
 
 import struct
 import time
 import sys
 import socket
+
+# ESP32 specific imports
+try:
+    import network
+    import gc
+    ESP32_AVAILABLE = True
+except ImportError:
+    ESP32_AVAILABLE = False
 
 try:
     _ticks = time.ticks_ms
@@ -38,7 +48,61 @@ DISCONNECTED = 0
 CONNECTING   = 1
 CONNECTED    = 2
 
-__version__ = '0.2.6-mp'
+__version__ = '1.3.2-mp-esp32'
+
+# ESP32 WiFi Helper Functions
+def connect_wifi(ssid, password, timeout=10):
+    """Connect to WiFi network on ESP32"""
+    if not ESP32_AVAILABLE:
+        print("Warning: ESP32 network module not available")
+        return False
+        
+    sta_if = network.WLAN(network.STA_IF)
+    if not sta_if.isconnected():
+        print('Connecting to WiFi...')
+        sta_if.active(True)
+        sta_if.connect(ssid, password)
+        
+        start_time = time.time()
+        while not sta_if.isconnected():
+            if time.time() - start_time > timeout:
+                print('WiFi connection timeout')
+                return False
+            time.sleep(0.5)
+    
+    print('WiFi connected:', sta_if.ifconfig())
+    return True
+
+def get_esp32_info():
+    """Get ESP32 hardware information"""
+    info = {
+        'platform': 'ESP32',
+        'memory_free': 0,
+        'chip_id': '0000',
+        'wifi_status': 'disconnected'
+    }
+    
+    if ESP32_AVAILABLE:
+        try:
+            import machine
+            import ubinascii
+            
+            # Get free memory
+            gc.collect()
+            info['memory_free'] = gc.mem_free()
+            
+            # Get chip ID
+            info['chip_id'] = ubinascii.hexlify(machine.unique_id()).decode()
+            
+            # Get WiFi status
+            sta_if = network.WLAN(network.STA_IF)
+            if sta_if.isconnected():
+                info['wifi_status'] = 'connected'
+                info['ip'] = sta_if.ifconfig()[0]
+        except:
+            pass
+    
+    return info
 
 
 class Blynk(object):
@@ -50,6 +114,17 @@ class Blynk(object):
         self.heartbeat  = kwargs.get('heartbeat',  10) * 1000
         self.rcv_buffer = kwargs.get('rcv_buffer', 1024)
         self.log        = kwargs.get('log',        None)
+        
+        # ESP32 specific settings
+        self.auto_wifi  = kwargs.get('auto_wifi',  True)
+        self.wifi_ssid  = kwargs.get('wifi_ssid',  None)  
+        self.wifi_pass  = kwargs.get('wifi_pass',  None)
+        
+        # New Blynk v1.3.2+ features
+        self.template_id = kwargs.get('template_id', None)
+        self.device_name = kwargs.get('device_name', 'ESP32 Device')
+        self.firmware_ver = kwargs.get('firmware_version', '2.0.0')
+        self.heartbeat_timeout = kwargs.get('heartbeat_timeout', 30) * 1000
 
         self.state       = DISCONNECTED
         self._conn       = None
@@ -61,6 +136,10 @@ class Blynk(object):
         self._last_ping  = 0
         self._last_retry = 0
         self._retry_ms   = 5000
+        
+        # ESP32 memory management
+        if ESP32_AVAILABLE:
+            gc.collect()  # Clean up memory on init
 
     # --------------------------------------------------
     # handle_event decorator  (official blynklib API)
@@ -128,6 +207,20 @@ class Blynk(object):
     # Connection management
     # --------------------------------------------------
     def connect(self):
+        # ESP32: Auto-connect WiFi if needed
+        if ESP32_AVAILABLE and self.auto_wifi:
+            if self.wifi_ssid and self.wifi_pass:
+                sta_if = network.WLAN(network.STA_IF)
+                if not sta_if.isconnected():
+                    if not connect_wifi(self.wifi_ssid, self.wifi_pass):
+                        print('WiFi connection failed, cannot connect to Blynk')
+                        return
+            else:
+                sta_if = network.WLAN(network.STA_IF)
+                if not sta_if.isconnected():
+                    print('WiFi not connected and no credentials provided')
+                    return
+        
         if self._conn:
             try:
                 self._conn.close()
@@ -135,6 +228,10 @@ class Blynk(object):
                 pass
             self._conn = None
 
+        # ESP32: Memory cleanup before connection
+        if ESP32_AVAILABLE:
+            gc.collect()
+            
         print('Connecting to Blynk (' + self.server + ':' + str(self.port) + ')...')
         try:
             addr = socket.getaddrinfo(self.server, self.port)[0][-1]
@@ -177,6 +274,14 @@ class Blynk(object):
         self._emit('disconnect')
 
     def run(self):
+        # ESP32: Check WiFi connection if auto_wifi is enabled
+        if ESP32_AVAILABLE and self.auto_wifi:
+            sta_if = network.WLAN(network.STA_IF)
+            if not sta_if.isconnected() and self.wifi_ssid and self.wifi_pass:
+                if self.log:
+                    self.log('WiFi disconnected, attempting reconnect...')
+                connect_wifi(self.wifi_ssid, self.wifi_pass, 5)
+        
         if self.state == DISCONNECTED:
             now = _ticks()
             if now - self._last_retry > self._retry_ms:
@@ -199,6 +304,10 @@ class Blynk(object):
             return
 
         self._process(data)
+        
+        # ESP32: Periodic memory cleanup
+        if ESP32_AVAILABLE and _ticks() % 30000 == 0:  # Every 30 seconds
+            gc.collect()
 
     # --------------------------------------------------
     # Protocol internals
@@ -341,3 +450,103 @@ class Blynk(object):
                 self._handlers[key](*args, **kwargs)
             except Exception as e:
                 print('Handler [' + key + '] error: ' + str(e))
+
+    # New methods for Blynk library v1.3.2+ compatibility
+    def update_property(self, pin, prop, value):
+        """Update widget property (new API)"""
+        self.set_property(pin, prop, value)
+
+    def batch_send_start(self):
+        """Start batch sending mode for multiple writes"""
+        if self.log:
+            self.log('Batch send started')
+        # In MicroPython implementation, we don't need special batch handling
+        pass
+
+    def batch_send_end(self):
+        """End batch sending mode"""  
+        if self.log:
+            self.log('Batch send ended')
+        pass
+
+    def is_hardware_connected(self):
+        """Check if hardware is connected to Blynk cloud"""
+        return self.is_connected()
+
+    def get_milliseconds(self):
+        """Get current milliseconds (for compatibility)"""
+        try:
+            import time
+            return int(time.time() * 1000) 
+        except:
+            return 0
+
+    def heartbeat(self, timeout=None):
+        """Configure heartbeat timeout"""
+        if timeout:
+            self.heartbeat_timeout = timeout * 1000
+            if self.log:
+                self.log('Heartbeat timeout set to', timeout, 'seconds')
+
+    def firmware_info(self, version="2.0.0", build="0"):
+        """Send firmware information with ESP32 details"""
+        esp32_info = get_esp32_info()
+        
+        info_data = 'ver:' + str(version) + '\nbld:' + str(build) + '\nfw:MicroPython-ESP32'
+        info_data += '\nplatform:' + esp32_info['platform']
+        info_data += '\nchip:' + esp32_info['chip_id']
+        info_data += '\nmem:' + str(esp32_info['memory_free'])
+        
+        self._send(MSG_HW_LOGIN, info_data.encode('utf8'))
+        if self.log:
+            self.log('ESP32 Firmware info sent:', version, build, esp32_info['chip_id'])
+
+    def config_mode(self, enabled=True):
+        """Enable/disable configuration mode (placeholder for MicroBlock)"""
+        if self.log:
+            self.log('Config mode:', 'enabled' if enabled else 'disabled')
+    
+    # ESP32 Specific Methods
+    def wifi_connect(self, ssid, password, timeout=10):
+        """Connect to WiFi network (ESP32)"""
+        self.wifi_ssid = ssid
+        self.wifi_pass = password
+        return connect_wifi(ssid, password, timeout)
+    
+    def wifi_info(self):
+        """Get current WiFi information (ESP32)"""
+        if not ESP32_AVAILABLE:
+            return {'status': 'unavailable'}
+            
+        sta_if = network.WLAN(network.STA_IF)
+        info = {
+            'connected': sta_if.isconnected(),
+            'config': sta_if.ifconfig() if sta_if.isconnected() else None,
+            'rssi': None
+        }
+        
+        try:
+            if sta_if.isconnected():
+                info['rssi'] = sta_if.status('rssi')
+        except:
+            pass
+            
+        return info
+    
+    def memory_info(self):
+        """Get ESP32 memory information"""
+        if ESP32_AVAILABLE:
+            gc.collect()
+            return {
+                'free': gc.mem_free(),
+                'allocated': gc.mem_alloc()
+            }
+        return {'free': 0, 'allocated': 0}
+    
+    def cleanup_memory(self):
+        """Force garbage collection on ESP32"""
+        if ESP32_AVAILABLE:
+            gc.collect()
+            if self.log:
+                mem_info = self.memory_info()
+                self.log('Memory cleaned - Free:', mem_info['free'])

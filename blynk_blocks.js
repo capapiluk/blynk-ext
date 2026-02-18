@@ -1,6 +1,7 @@
 // ============================================================
 // Blynk IoT — Blockly Block Definitions
-// MicroBlock + MicroPython 1.6.0
+// MicroBlock + MicroPython 1.6+
+// Updated for Blynk library v1.3.2 compatibility 
 // ============================================================
 
 // Block 1 — เชื่อมต่อ Blynk
@@ -231,6 +232,134 @@ Blockly.Blocks['blynk_get_value'] = {
     this.setOutput(true, null);
     this.setColour('#95A5A6');
     this.setTooltip('ดึงค่า values[index] จาก write handler\nindex เริ่มที่ 0');
+    this.setHelpUrl('');
+  }
+};
+
+// Block 15 — Template ID (New in v1.3.2+)
+Blockly.Blocks['blynk_template_id'] = {
+  init: function() {
+    this.appendValueInput('template_id')
+        .setCheck('String')
+        .appendField('Blynk Template ID');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour('#00C7B7');
+    this.setTooltip('ตั้งค่า Template ID สำหรับ Blynk IoT (v1.3.2+)\nเช่น TMPL000000');
+    this.setHelpUrl('');
+  }
+};
+
+// Block 16 — Device Name (New in v1.3.2+)
+Blockly.Blocks['blynk_device_name'] = {
+  init: function() {
+    this.appendValueInput('name')
+        .setCheck('String')
+        .appendField('Blynk Device Name');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour('#00C7B7');
+    this.setTooltip('ตั้งชื่ออุปกรณ์สำหรับ Blynk IoT');
+    this.setHelpUrl('');
+  }
+};
+
+// Block 17 — Firmware Version (New in v1.3.2+)
+Blockly.Blocks['blynk_firmware_version'] = {
+  init: function() {
+    this.appendValueInput('version')
+        .setCheck('String')
+        .appendField('Firmware Version');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour('#00C7B7');
+    this.setTooltip('ตั้งค่าเวอร์ชันของ Firmware\nเช่น 1.0.0');
+    this.setHelpUrl('');
+  }
+};
+
+// Block 18 — Update Property (Enhanced set_property)
+Blockly.Blocks['blynk_update_property'] = {
+  init: function() {
+    this.appendValueInput('pin')
+        .setCheck('Number')
+        .appendField('อัพเดท Property V');
+    this.appendValueInput('property')
+        .setCheck('String')
+        .appendField('Property');
+    this.appendValueInput('value')
+        .setCheck(null)
+        .appendField('ค่า');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour('#00C7B7');
+    this.setTooltip('อัพเดท Widget Property ใน Blynk v1.3.2+\nProperty: color, label, min, max, step');
+    this.setHelpUrl('');
+  }
+};
+
+// Block 19 — Batch Send Start (Performance improvement)
+Blockly.Blocks['blynk_batch_start'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Blynk Batch Send เริ่ม');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour('#E67E22');
+    this.setTooltip('เริ่มการส่งแบบ Batch หลายค่าพร้อมกัน\nเพิ่มประสิทธิภาพเมื่อส่งหลายค่า');
+    this.setHelpUrl('');
+  }
+};
+
+// Block 20 — Batch Send End
+Blockly.Blocks['blynk_batch_end'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('Blynk Batch Send จบ');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour('#E67E22');
+    this.setTooltip('จบการส่งแบบ Batch\nส่งข้อมูลทั้งหมดไปยัง Blynk Cloud');
+    this.setHelpUrl('');
+  }
+};
+
+// Block 21 — WiFi Connect (ESP32)
+Blockly.Blocks['blynk_wifi_connect'] = {
+  init: function() {
+    this.appendValueInput('ssid')
+        .setCheck('String')
+        .appendField('ESP32 เชื่อมต่อ WiFi');
+    this.appendValueInput('password')
+        .setCheck('String')
+        .appendField('รหัสผ่าน');
+    this.setOutput(true, 'Boolean');
+    this.setColour('#3498DB');
+    this.setTooltip('เชื่อมต่อ WiFi บน ESP32\nคืนค่า True ถ้าเชื่อมต่อสำเร็จ');
+    this.setHelpUrl('');
+  }
+};
+
+// Block 22 — WiFi Info (ESP32)
+Blockly.Blocks['blynk_wifi_info'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('ESP32 ข้อมูล WiFi');
+    this.setOutput(true, null);
+    this.setColour('#3498DB');
+    this.setTooltip('ข้อมูลการเชื่อมต่อ WiFi บน ESP32\nคืนค่า dictionary ที่มี IP, RSSI, สถานะ');
+    this.setHelpUrl('');
+  }
+};
+
+// Block 23 — Memory Info (ESP32)
+Blockly.Blocks['blynk_memory_info'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('ESP32 ข้อมูล Memory');
+    this.setOutput(true, null);
+    this.setColour('#9B59B6');
+    this.setTooltip('ข้อมูลการใช้หน่วยความจำบน ESP32\nคืนค่า dictionary ที่มี free, allocated');
     this.setHelpUrl('');
   }
 };

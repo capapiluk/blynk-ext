@@ -1,9 +1,9 @@
 ({
     name: "Blynk IoT",
-    description: "Blynk IoT Platform for MicroPython ESP32/ESP8266 (based on blynkkk/lib-python)",
+    description: "Blynk IoT Platform for MicroPython v1.6+ ESP32/ESP8266/Raspberry Pi (Updated for latest Blynk library v1.3.2)",
     author: "Cap_Apiluk",
-    category: "Communication",
-    version: "1.0.0",
+    category: "Communication",  
+    version: "2.0.0",
     icon: "/static/icon.svg",
     color: "#00C7B7",
 
@@ -31,6 +31,7 @@
         },
         {   // handle_event write
             xml: `<block type="blynk_handle_write">
+                    <field name="VAR">values</field>
                     <value name="pin"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
                   </block>`
         },
@@ -75,8 +76,49 @@
         },
         {   // get_value
             xml: `<block type="blynk_get_value">
+                    <value name="values"><shadow type="variables_get"><field name="VAR">values</field></shadow></value>
                     <value name="index"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
                   </block>`
+        },
+        {   // template_id
+            xml: `<block type="blynk_template_id">
+                    <value name="template_id"><shadow type="text"><field name="TEXT">TMPL000000</field></shadow></value>
+                  </block>`
+        },
+        {   // device_name
+            xml: `<block type="blynk_device_name">
+                    <value name="name"><shadow type="text"><field name="TEXT">My Device</field></shadow></value>
+                  </block>`
+        },
+        {   // firmware_version
+            xml: `<block type="blynk_firmware_version">
+                    <value name="version"><shadow type="text"><field name="TEXT">1.0.0</field></shadow></value>
+                  </block>`
+        },
+        {   // update_property  
+            xml: `<block type="blynk_update_property">
+                    <value name="pin"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
+                    <value name="property"><shadow type="text"><field name="TEXT">color</field></shadow></value>
+                    <value name="value"><shadow type="text"><field name="TEXT">#FF0000</field></shadow></value>
+                  </block>`
+        },
+        {   // batch_send_start
+            xml: `<block type="blynk_batch_start"></block>`
+        },
+        {   // batch_send_end 
+            xml: `<block type="blynk_batch_end"></block>`
+        },
+        {   // wifi_connect (ESP32)
+            xml: `<block type="blynk_wifi_connect">
+                    <value name="ssid"><shadow type="text"><field name="TEXT">YourWiFi</field></shadow></value>
+                    <value name="password"><shadow type="text"><field name="TEXT">YourPassword</field></shadow></value>
+                  </block>`
+        },
+        {   // wifi_info (ESP32)
+            xml: `<block type="blynk_wifi_info"></block>`
+        },
+        {   // memory_info (ESP32)
+            xml: `<block type="blynk_memory_info"></block>`
         }
     ],
 
