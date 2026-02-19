@@ -11,18 +11,22 @@ import time
 import sys
 import socket
 
-# ESP32 specific imports
+# ESP32 specific imports with better error handling
 try:
     import network
     import gc
     ESP32_AVAILABLE = True
 except ImportError:
     ESP32_AVAILABLE = False
+    print("Note: ESP32 network features not available")
 
+# Time functions compatibility
 try:
     _ticks = time.ticks_ms
+    _sleep_ms = time.sleep_ms
 except AttributeError:
-    _ticks = lambda: int(time.time() * 1000)
+    _ticks = lambda: int(time.time() * 1000) 
+    _sleep_ms = lambda ms: time.sleep(ms / 1000.0)
 
 SOCK_TIMEOUT = 0
 
@@ -51,26 +55,81 @@ CONNECTED    = 2
 __version__ = '1.3.2-mp-esp32'
 
 # ESP32 WiFi Helper Functions
-def connect_wifi(ssid, password, timeout=10):
-    """Connect to WiFi network on ESP32"""
+def connect_wifi(ssid, password, timeout=15):
+    """Connect to WiFi network on ESP32 with improved compatibility"""
     if not ESP32_AVAILABLE:
         print("Warning: ESP32 network module not available")
         return False
         
     sta_if = network.WLAN(network.STA_IF)
-    if not sta_if.isconnected():
-        print('Connecting to WiFi...')
-        sta_if.active(True)
-        sta_if.connect(ssid, password)
+    if sta_if.isconnected():
+        print('Already connected to WiFi:', sta_if.ifconfig()[0])
+        return True
         
-        start_time = time.time()
-        while not sta_if.isconnected():
-            if time.time() - start_time > timeout:
-                print('WiFi connection timeout')
-                return False
-            time.sleep(0.5)
+    print('Connecting to WiFi...')
+    sta_if.active(True)
     
-    print('WiFi connected:', sta_if.ifconfig())
+    # Wait for interface to be ready
+    import time
+    _sleep_ms(100)
+    
+    sta_if.connect(ssid, password)
+    
+    start_time = time.time()
+    while not sta_if.isconnected():
+        if time.time() - start_time > timeout:
+            print('WiFi connection timeout')
+            return False
+        _sleep_ms(500)  # Use compatible sleep function
+    
+    print('WiFi connected:', sta_if.ifconfig()[0])
+    return True
+
+def test_connectivity(ssid=None, password=None, server="blynk.cloud", port=80):
+    """Test basic connectivity for troubleshooting"""
+    print("=== Blynk Connectivity Test ===")
+    
+    # Test 1: Check ESP32 availability  
+    print("1. ESP32 Check:", "OK" if ESP32_AVAILABLE else "FAILED")
+    if not ESP32_AVAILABLE:
+        print("   Network module not available")
+        return False
+    
+    # Test 2: WiFi connection
+    sta_if = network.WLAN(network.STA_IF)
+    if sta_if.isconnected():
+        print("2. WiFi:", "CONNECTED -", sta_if.ifconfig()[0])
+    elif ssid and password:
+        print("2. WiFi: Attempting connection...")
+        if connect_wifi(ssid, password):
+            print("   WiFi: CONNECTED -", sta_if.ifconfig()[0]) 
+        else:
+            print("   WiFi: FAILED")
+            return False
+    else:
+        print("2. WiFi: NOT CONNECTED (provide SSID/password to test)")
+        return False
+    
+    # Test 3: DNS resolution
+    try:
+        addr = socket.getaddrinfo(server, port)[0][-1]
+        print("3. DNS Resolution:", "OK -", addr)
+    except Exception as e:
+        print("3. DNS Resolution: FAILED -", e)
+        return False
+    
+    # Test 4: Socket connection  
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(10.0)
+        s.connect(addr)
+        print("4. Socket Connection: OK")
+        s.close()
+    except Exception as e:
+        print("4. Socket Connection: FAILED -", e)
+        return False
+        
+    print("=== All tests PASSED ===")
     return True
 
 def get_esp32_info():
@@ -241,16 +300,28 @@ class Blynk(object):
             
         print('Connecting to Blynk (' + self.server + ':' + str(self.port) + ')...')
         try:
+            # Resolve address first
             addr = socket.getaddrinfo(self.server, self.port)[0][-1]
-            s = socket.socket()
+            print('Resolved:', addr)
+            
+            # Create socket
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            
+            # Set socket timeout before connecting (MicroPython 1.6 compatibility)
+            try:
+                s.settimeout(10.0)
+            except:
+                pass
+            
+            # Connect to server
             s.connect(addr)
+            print('Socket connected')
+            
+            # Set additional socket options after connection
             try:
                 s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             except:
-                pass
-            try:
-                s.settimeout(SOCK_TIMEOUT)
-            except:
+                # TCP_NODELAY might not be available in older versions
                 pass
 
             self._conn      = s
@@ -296,21 +367,48 @@ class Blynk(object):
                 self.connect()
             return
 
-        data = b''
+        # Read socket data
+        self._read_socket()
+        
+        # Handle heartbeat
+        now = _ticks()
+        if self.state == CONNECTED:
+            if now - self._last_recv > self.heartbeat_timeout:
+                print('Heartbeat timeout')
+                self.disconnect()
+                return
+            if now - self._last_ping > self.heartbeat:
+                self._send(MSG_PING)
+                self._last_ping = now
+
+    def _read_socket(self):
+        """Read data from socket with MicroPython 1.6 compatibility"""
+        if self.state == DISCONNECTED:
+            return
+        if not self._conn:
+            return
+            
         try:
-            data = self._conn.read(self.rcv_buffer)
+            # Use recv instead of read for better MicroPython compatibility
+            if hasattr(self._conn, 'recv'):
+                data = self._conn.recv(self.rcv_buffer)
+            else:
+                data = self._conn.read(self.rcv_buffer)
         except KeyboardInterrupt:
             raise
         except OSError as e:
             code = e.args[0] if e.args else 0
-            if code in (104, 113, 128, 54):
+            if code in (104, 113, 128, 54, 11, 9):  # Add EAGAIN and EBADF
                 print('Connection lost [' + str(code) + ']')
                 self.disconnect()
                 return
-        except:
+        except Exception as e:
+            print('Socket read error:', e)
+            self.disconnect()
             return
 
-        self._process(data)
+        if data:
+            self._process(data)
         
         # ESP32: Periodic memory cleanup
         if ESP32_AVAILABLE and _ticks() % 30000 == 0:  # Every 30 seconds
@@ -344,9 +442,15 @@ class Blynk(object):
         self._last_send = _ticks()
         try:
             if self._conn:
-                self._conn.write(msg)
+                if hasattr(self._conn, 'send'):
+                    self._conn.send(msg)
+                else:
+                    self._conn.write(msg)
         except OSError as e:
             print('Send error: ' + str(e))
+            self.disconnect()
+        except Exception as e:
+            print('Write error: ' + str(e))
             self.disconnect()
         except:
             self.disconnect()

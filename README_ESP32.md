@@ -272,7 +272,75 @@ if memory['free'] < 15000:
   - Improved MicroPython v1.6+ compatibility
   - Better error handling and connection stability
 
-## 📄 License
+## � Troubleshooting
+
+### WiFi Connection Issues
+
+If you're having trouble connecting to WiFi:
+
+1. **Test basic connectivity:**
+   ```python
+   import blynklib_mp as blynklib
+   
+   # Test connectivity (replace with your credentials)
+   blynklib.test_connectivity("YourWiFi", "YourPassword")
+   ```
+
+2. **Check WiFi credentials:**
+   - Make sure SSID and password are correct
+   - Use 2.4GHz network (ESP32 doesn't support 5GHz)
+   - Avoid special characters in WiFi names
+
+3. **MicroPython 1.6.0 specific:**
+   - Use the included `simple_test.py` to verify compatibility
+   - Some older firmware may need manual WiFi connection:
+     ```python
+     import network
+     sta_if = network.WLAN(network.STA_IF)
+     sta_if.active(True)
+     sta_if.connect("YourWiFi", "YourPassword")
+     ```
+
+### Blynk Connection Issues
+
+If WiFi connects but Blynk doesn't:
+
+1. **Check auth token:**
+   - Verify token is correct (case-sensitive)
+   - Create new device in Blynk.Console if needed
+
+2. **Test basic connection:**
+   ```python
+   # Use simple_test.py for step-by-step testing
+   ```
+
+3. **Common MicroPython 1.6.0 fixes:**
+   - Updated socket handling for older firmware
+   - Improved timeout management
+   - Better error handling for connection issues
+
+### Memory Issues
+
+If ESP32 runs out of memory:
+
+1. **Check available RAM:**
+   ```python
+   blynk.memory_info()
+   ```
+
+2. **Optimize code:**
+   - Use `gc.collect()` regularly
+   - Avoid large string concatenations
+   - Limit concurrent virtual pin operations
+
+### Error Messages
+
+- `Connection lost [104]` - Network disconnection (normal, will auto-reconnect)
+- `WiFi connection timeout` - Check WiFi credentials and signal strength
+- `Socket read error` - Usually network related, will auto-retry
+- `Send error` - Connection interrupted, will reconnect automatically
+
+## �📄 License
 
 MIT License
 
