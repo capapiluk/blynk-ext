@@ -9,7 +9,7 @@ Blockly.Blocks['blynk_wifi_setup'] = {
   init: function() {
     this.appendValueInput('template_id')
         .setCheck('String')
-        .appendField('🚀 Blynk 2025 Setup - Template ID');
+        .appendField('Blynk 2025 Setup - Template ID');
     this.appendValueInput('template_name')
         .setCheck('String')
         .appendField('Template Name');
@@ -31,7 +31,7 @@ Blockly.Blocks['blynk_wifi_setup'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(120);
-    this.setTooltip('Blynk 2025-2026 Complete Setup\n✅ Template ID (Required!)\n✅ WiFi Auto-Connect\n✅ Modern blynk.cloud server\n✅ Static Token support');
+    this.setTooltip('Blynk 2025-2026 Complete Setup\n- Template ID (Required!)\n- WiFi Auto-Connect\n- Modern blynk.cloud server\n- Static Token support');
     this.setHelpUrl('https://docs.blynk.io/en/getting-started/supported-boards');
   }
 };
@@ -403,7 +403,7 @@ Blockly.Blocks['blynk_http_upload'] = {
   init: function() {
     this.appendValueInput('pin')
         .setCheck('Number')
-        .appendField('📊 HTTP API Upload Pin');
+        .appendField('HTTP API Upload Pin');
     this.appendValueInput('value')
         .setCheck(['Number', 'String'])
         .appendField('Value');
@@ -413,7 +413,7 @@ Blockly.Blocks['blynk_http_upload'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(45);
-    this.setTooltip('Blynk 2025-2026 HTTP API\n✅ Batch data upload\n✅ Cellular-friendly\n✅ Timestamped data\nIdeal for low-power devices');
+    this.setTooltip('Blynk 2025-2026 HTTP API\n- Batch data upload\n- Cellular-friendly\n- Timestamped data\nIdeal for low-power devices');
     this.setHelpUrl('https://docs.blynk.io/en/blynk.cloud/device-https-api');
   }
 };
@@ -422,10 +422,10 @@ Blockly.Blocks['blynk_http_upload'] = {
 Blockly.Blocks['blynk_device_status'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField('🔍 Device Status Check');
+        .appendField('Device Status Check');
     this.setOutput(true, 'Boolean');
     this.setColour(45);
-    this.setTooltip('Check 2025-2026 device status\n✅ Connection health\n✅ Template validation\n✅ Server response');
+    this.setTooltip('Check 2025-2026 device status\n- Connection health\n- Template validation\n- Server response');
     this.setHelpUrl('');
   }
 };
@@ -434,10 +434,10 @@ Blockly.Blocks['blynk_device_status'] = {
 Blockly.Blocks['blynk_ota_ready'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField('🔄 OTA Update Ready?');
+        .appendField('OTA Update Ready?');
     this.setOutput(true, 'Boolean');  
     this.setColour(45);
-    this.setTooltip('Blynk.Air OTA Preparation\n✅ Check firmware update availability\n✅ Prepare for Over-The-Air updates');
+    this.setTooltip('Blynk.Air OTA Preparation\n- Check firmware update availability\n- Prepare for Over-The-Air updates');
     this.setHelpUrl('https://docs.blynk.io/en/blynk.edgent/updating-devices-firmwares-ota');
   }
 };

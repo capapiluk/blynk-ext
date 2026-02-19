@@ -2,7 +2,7 @@
 
 A comprehensive Blynk IoT extension for MicroBlock specifically optimized for ESP32 with automatic WiFi management and memory optimization. Compatible with MicroPython v1.6+ and Blynk library v1.3.2.
 
-## 🚀 ESP32 Optimized Features
+##  ESP32 Optimized Features
 
 ### Core Blynk Functions
 - **Blynk Init** - Initialize connection with auto-WiFi for ESP32

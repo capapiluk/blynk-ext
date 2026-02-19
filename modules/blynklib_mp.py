@@ -128,10 +128,10 @@ class Blynk(object):
 
         # Print modern Blynk configuration
         if self.template_id:
-            print(f"🚀 Blynk 2025-2026 Init: Template {self.template_id}")
-            print(f"📱 Device: {self.device_name} | Server: {self.server}")
+            print("Blynk 2025-2026 Init: Template {}".format(self.template_id))
+            print("Device: {} | Server: {}".format(self.device_name, self.server))
         else:
-            print("⚠️  Legacy Mode: No Template ID specified")
+            print("Legacy Mode: No Template ID specified")
 
         self.state       = DISCONNECTED
         self._conn       = None
@@ -571,14 +571,14 @@ class Blynk(object):
             
             # Prepare HTTP API call (simplified version)
             if self.log:
-                self.log(f"📊 HTTP Upload: V{pin}={value} @{timestamp}")
+                self.log("HTTP Upload: V{}={} @{}".format(pin, value, timestamp))
             
             # For real implementation, would use urequests to POST to:
             # https://blynk.cloud/external/api/batch/update
             # with proper auth headers and JSON payload
             
             # Simulate successful upload
-            print(f"✅ HTTP API: Pin V{pin} = {value}")
+            print("HTTP API: Pin V{} = {}".format(pin, value))
             return True
             
         except Exception as e:
@@ -624,8 +624,8 @@ class Blynk(object):
                            status['memory_ok'])
         
         if self.log:
-            health_emoji = "✅" if status['healthy'] else "❌"
-            self.log(f"{health_emoji} Device Status: {status['healthy']}")
+            health_status = "OK" if status['healthy'] else "ERROR"
+            self.log("Device Status: {}".format(health_status))
         
         return status['healthy']
     
@@ -659,8 +659,8 @@ class Blynk(object):
             ota_ready = all(requirements.values())
             
             if self.log:
-                ready_emoji = "🔄" if ota_ready else "⏸️"
-                self.log(f"{ready_emoji} OTA Ready: {ota_ready}")
+                ready_status = "READY" if ota_ready else "PAUSED"
+                self.log("OTA Status: {}".format(ready_status))
             
             return ota_ready
             

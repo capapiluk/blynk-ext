@@ -77,7 +77,7 @@ def slider_control(pin, values):
 @blynk.handle_event("connect")
 def on_connect():
     """Called when connected to Blynk"""
-    print("✅ Connected to Blynk Cloud!")
+    print("Connected to Blynk Cloud!")
     
     # Send initial values
     blynk.virtual_write(1, temperature)
@@ -94,7 +94,7 @@ def on_connect():
 @blynk.handle_event("disconnect")
 def on_disconnect():
     """Called when disconnected from Blynk"""
-    print("❌ Disconnected from Blynk")
+    print("Disconnected from Blynk")
 
 def send_sensor_data():
     """Send multiple sensor values efficiently"""
@@ -122,7 +122,7 @@ def main():
     last_sensor_update = 0
     last_memory_check = 0
     
-    print("🚀 Starting ESP32 Blynk Example...")
+    print(" Starting ESP32 Blynk Example...")
     
     # Send firmware information
     blynk.firmware_info("2.0.0", "esp32")
@@ -156,13 +156,13 @@ def main():
             # WiFi status check
             wifi_info = blynk.wifi_info()
             if not wifi_info['connected']:
-                print("⚠️ WiFi disconnected!")
+                print("WiFi disconnected!")
             
         except KeyboardInterrupt:
-            print("\n🛑 Stopping...")
+            print("\nStopping...")
             break
         except Exception as e:
-            print("❌ Error in main loop:", e)
+            print("Error in main loop:", e)
             
         # Small delay to prevent busy waiting
         time.sleep(0.1)

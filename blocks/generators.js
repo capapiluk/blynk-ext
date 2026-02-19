@@ -36,13 +36,13 @@ Blockly.Python['blynk_wifi_setup'] = function(block) {
         '    sta_if.connect(' + ssid + ', ' + password + ')\n' +
         '    while not sta_if.isconnected():\n' +
         '        pass\n' +
-        'print("🌐 WiFi Connected:", sta_if.ifconfig()[0])';
+        'print("WiFi Connected:", sta_if.ifconfig()[0])';
         
     Blockly.Python.definitions_['blynk_obj'] =
         '# Blynk 2025-2026 Object with Template Support\n' +
         'blynk = blynklib.Blynk(BLYNK_AUTH_TOKEN, server=' + server + ', port=' + port + 
         ', heartbeat_timeout=30, firmware_version="2.0.0", template_id=BLYNK_TEMPLATE_ID, device_name=BLYNK_TEMPLATE_NAME, auto_wifi=False)\n' +
-        'print("🚀 Blynk 2025-2026 Ready! Template:", BLYNK_TEMPLATE_ID)';
+        'print("Blynk 2025-2026 Ready! Template:", BLYNK_TEMPLATE_ID)';
     
     return '';
 };
