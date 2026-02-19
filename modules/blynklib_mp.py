@@ -115,7 +115,7 @@ def test_connectivity(ssid=None, password=None, server="blynk.cloud", port=80):
         addr = socket.getaddrinfo(server, port)[0][-1]
         print("3. DNS Resolution:", "OK -", addr)
     except Exception as e:
-        print("3. DNS Resolution: FAILED -", e)
+        print("3. DNS Resolution: FAILED -", str(e))
         return False
     
     # Test 4: Socket connection  
@@ -126,7 +126,7 @@ def test_connectivity(ssid=None, password=None, server="blynk.cloud", port=80):
         print("4. Socket Connection: OK")
         s.close()
     except Exception as e:
-        print("4. Socket Connection: FAILED -", e)
+        print("4. Socket Connection: FAILED -", str(e))
         return False
         
     print("=== All tests PASSED ===")
